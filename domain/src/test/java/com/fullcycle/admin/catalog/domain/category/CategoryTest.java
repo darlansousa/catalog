@@ -1,5 +1,7 @@
 package com.fullcycle.admin.catalog.domain.category;
 
+import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
+import com.fullcycle.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +27,6 @@ public class CategoryTest {
         assertNull(category.getDeletedAt());
     }
 
-
     @Test
     void givenAnInvalidNullNameWhenCallNewCategoryAndValidateThenShouldReturnError() {
         final String expectedName = null;
@@ -36,10 +37,10 @@ public class CategoryTest {
 
         final var category = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
 
-        final var actualException = assertThrows(DomainException.class, () -> category.validate());
+        final var actualException = assertThrows(DomainException.class, () -> category.validate(new ThrowsValidationHandler()));
 
         assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0));
+        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
 
     }
 
